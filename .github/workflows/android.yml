@@ -88,21 +88,22 @@ jobs:
           export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
           ./gradlew :app:assembleRelease -Pnm.abi=arm64-v8a --console=plain --no-daemon
 
-      # The unit tests and instrumentation source set are checked against Release as well.
-      # The on-device tests cannot run here (no emulator), so compile them without installing.
-      - name: Release unit tests
+      # Run tests on Debug because the LLMRequestLog tests cover debug-only behavior. The APK
+      # produced above and uploaded below remains the Release variant.
+      - name: Debug unit tests (test variant only)
         working-directory: android/src/android
         run: |
           export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
-          ./gradlew :app:testReleaseUnitTest --tests 'io.github.nanomuse.*' \
+          ./gradlew :app:testDebugUnitTest --tests 'io.github.nanomuse.*' \
             --tests 'com.openminis.app.provider.*' --tests 'com.openminis.app.sandbox.*' \
             --console=plain --no-daemon
 
-      - name: Release androidTest compiles
+      # On-device tests cannot run here (no emulator); compile their test-only Debug source set.
+      - name: Debug androidTest compiles (test variant only)
         working-directory: android/src/android
         run: |
           export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
-          ./gradlew :app:compileReleaseAndroidTestKotlin --console=plain --no-daemon
+          ./gradlew :app:compileDebugAndroidTestKotlin --console=plain --no-daemon
 
       - name: Verify Release APK and ARM64 ABI
         run: |
