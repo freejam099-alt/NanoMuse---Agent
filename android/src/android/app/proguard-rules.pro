@@ -1,6 +1,10 @@
 # Tink references errorprone annotations that aren't shipped at runtime
 -dontwarn com.google.errorprone.annotations.**
 
+# SnakeYAML carries optional JVM JavaBeans introspection for arbitrary-object handling.
+# Android has no java.beans; SkillDocuments uses SafeConstructor and serializes maps only.
+-dontwarn java.beans.**
+
 # [T-android-vad-jni-keep / GH#250] RealTimeCutVAD's C++ layer calls back into
 # VADWrapper BY NAME through JNI (GetMethodID "onVoiceStart" / "onVoiceEnd" /
 # "onVoiceDidContinue"). Those three are PRIVATE Java methods with no Java-side
