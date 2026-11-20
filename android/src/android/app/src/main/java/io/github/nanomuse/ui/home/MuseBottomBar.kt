@@ -34,22 +34,24 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.openminis.app.R
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.hazeEffect
 import io.github.nanomuse.ui.chat.NM_CHAT_COMPOSER_BOTTOM_GAP
 
 /**
- * nanoMuse's bottom bar: a floating frosted-glass pill, five glyphs, icons only. The pill blurs
- * whatever is behind it (Haze, in the Pixel taskbar's manner) and carries a hairline edge. The
- * current tab shows a filled glyph on a gradient indicator pill that springs in; the others are
- * outlined. No labels: the fill and the indicator are the state.
+ * nanoMuse's bottom bar: a floating frosted-glass pill, five glyphs, icons only. Chat uses the
+ * app's AI Brain 02 mark; the other tabs use their outlined/filled glyphs. The pill blurs whatever
+ * is behind it (Haze, in the Pixel taskbar's manner) and carries a hairline edge. The current tab
+ * shows its glyph on a gradient indicator pill that springs in. No labels: the indicator is state.
  */
 @Composable
 fun MuseBottomBar(
@@ -160,13 +162,23 @@ fun MuseBottomBar(
                                 .background(MuseTones.brandGradient, CircleShape)
                                 .graphicsLayer { alpha = indicatorAlpha },
                         )
-                        Icon(
-                            imageVector = if (isSelected) tab.selectedIcon else tab.icon,
-                            contentDescription = stringResource(tab.label),
-                            tint = if (isSelected) Color.White
-                            else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(26.dp),
-                        )
+                        val iconTint = if (isSelected) Color.White
+                        else MaterialTheme.colorScheme.onSurfaceVariant
+                        if (tab == HomeTab.CHAT) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_stat_nanomuse),
+                                contentDescription = stringResource(tab.label),
+                                tint = iconTint,
+                                modifier = Modifier.size(26.dp),
+                            )
+                        } else {
+                            Icon(
+                                imageVector = if (isSelected) tab.selectedIcon else tab.icon,
+                                contentDescription = stringResource(tab.label),
+                                tint = iconTint,
+                                modifier = Modifier.size(26.dp),
+                            )
+                        }
                     }
                 }
             }
