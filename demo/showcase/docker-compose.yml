@@ -110,7 +110,7 @@ services:
   # at the networks — what the gateway does. Everything else answers 403: exec, images, volumes,
   # build, info, swarm. The socket itself is mounted here only, read-only, on a network of its own.
   docker-proxy:
-    image: tecnativa/docker-socket-proxy:0.3
+    image: tecnativa/docker-socket-proxy:3.4
     restart: unless-stopped
     logging: *logging
     environment:
