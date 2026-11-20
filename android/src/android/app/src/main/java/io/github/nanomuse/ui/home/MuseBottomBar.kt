@@ -1,10 +1,12 @@
 package io.github.nanomuse.ui.home
 
 import android.provider.Settings
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,7 +31,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalConfiguration
@@ -132,6 +137,11 @@ fun MuseBottomBar(
                     animationSpec = if (reduceMotion) snap() else spring(stiffness = Spring.StiffnessMediumLow),
                     label = "nmTabIndicator",
                 )
+                val gradientSweep by animateFloatAsState(
+                    targetValue = if (isSelected) 1f else 0f,
+                    animationSpec = if (reduceMotion) snap() else tween(durationMillis = 560, easing = LinearEasing),
+                    label = "nmTabGradientSweep",
+                )
                 // Five slots share the pill's width; the indicator disc keeps
                 // its 60 x 46 inside the slot (narrower only when the slot is).
                 Box(
@@ -160,6 +170,22 @@ fun MuseBottomBar(
                             Modifier
                                 .matchParentSize()
                                 .background(MuseTones.brandGradient, CircleShape)
+                                .drawBehind {
+                                    if (isSelected && !reduceMotion && gradientSweep < 1f) {
+                                        val centerX = size.width * (2f * gradientSweep - 0.8f)
+                                        drawRect(
+                                            brush = Brush.linearGradient(
+                                                colors = listOf(
+                                                    Color.Transparent,
+                                                    Color.White.copy(alpha = 0.18f),
+                                                    Color.Transparent,
+                                                ),
+                                                start = Offset(centerX - size.width * 0.25f, 0f),
+                                                end = Offset(centerX + size.width * 0.25f, size.height),
+                                            ),
+                                        )
+                                    }
+                                }
                                 .graphicsLayer { alpha = indicatorAlpha },
                         )
                         val iconTint = if (isSelected) Color.White

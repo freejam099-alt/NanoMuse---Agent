@@ -145,7 +145,15 @@ fun SettingsScreen(
         containerColor = io.github.nanomuse.ui.home.MuseTones.canvas,
         topBar = {
             io.github.nanomuse.ui.muse.MuseTopAppBar(
-                title = { Text(stringResource(R.string.settings_title)) },
+                title = {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        io.github.nanomuse.ui.muse.NmBrandMark(size = 22.dp)
+                        Text(stringResource(R.string.settings_title))
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -634,4 +642,3 @@ private fun SettingsItem(
         }
     }
 }
-

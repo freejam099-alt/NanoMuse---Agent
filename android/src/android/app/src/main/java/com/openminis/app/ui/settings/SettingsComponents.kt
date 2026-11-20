@@ -87,15 +87,26 @@ fun SettingsScaffold(
     centerTitle: Boolean = false,
     floatingActionButton: @Composable (() -> Unit)? = null,
     scrollable: Boolean = true,
+    showBrandMark: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Scaffold(
         topBar = {
             val titleSlot: @Composable () -> Unit = {
-                Text(
-                    title,
-                    fontWeight = FontWeight.SemiBold,
-                )
+                if (showBrandMark) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        io.github.nanomuse.ui.muse.NmBrandMark(size = 22.dp)
+                        Text(title, fontWeight = FontWeight.SemiBold)
+                    }
+                } else {
+                    Text(
+                        title,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
             }
             val navigationSlot: @Composable () -> Unit = {
                 when {

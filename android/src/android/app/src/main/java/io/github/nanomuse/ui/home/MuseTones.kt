@@ -51,7 +51,7 @@ object MuseTones {
     val actionForeground: Color
         @Composable @ReadOnlyComposable get() = if (dark) Color(0xFF07111F) else Color.White
 
-    /** AI Brain 02 brand gradient; reserved for the selected navigation indicator. */
+    /** AI Brain 02 brand gradient shared by the in-app mark and selected navigation indicator. */
     val brandGradient: Brush = Brush.horizontalGradient(
         colors = listOf(Color(0xFF015CFB), Color(0xFF0186FB)),
     )

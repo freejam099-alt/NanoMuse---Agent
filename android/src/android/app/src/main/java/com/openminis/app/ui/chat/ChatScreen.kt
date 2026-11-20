@@ -6291,6 +6291,11 @@ fun ChatScreen(
                         }
 
                         if (nmPill) {
+                            io.github.nanomuse.ui.muse.NmBrandMark(
+                                size = 22.dp,
+                                motionActive = inputText.isNotBlank() || attachments.isNotEmpty() || isStreaming,
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
                             nmTextField(Modifier.weight(1f)) // nanoMuse: the field between the buttons
                         } else {
                         Spacer(modifier = Modifier.width(8.dp))
@@ -7492,5 +7497,4 @@ private fun ThinkingLevelSheet(
         }
     }
 }
-
 
