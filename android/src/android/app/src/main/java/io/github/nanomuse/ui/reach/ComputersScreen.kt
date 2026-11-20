@@ -101,7 +101,7 @@ fun ComputersScreen(onBack: () -> Unit, onOpenAccount: () -> Unit = {}) {
                     Button(
                         onClick = { openExternalUrl(context, DESKTOP_DOWNLOAD_URL) },
                         shape = RoundedCornerShape(14.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action),
+                        colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                         modifier = Modifier.weight(1f),
                     ) {
                         androidx.compose.material3.Icon(Icons.Outlined.Download, contentDescription = null, modifier = Modifier.padding(end = 6.dp))

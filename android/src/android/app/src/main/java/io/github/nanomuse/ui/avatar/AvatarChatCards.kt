@@ -277,7 +277,7 @@ fun AvatarShareCard(description: String, onDismiss: () -> Unit) {
             Button(
                 onClick = { sheet = true },
                 shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
             ) {
                 Text(stringResource(R.string.nm_avatar_share_button), fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
@@ -313,7 +313,7 @@ fun AvatarConfirmCard(text: String, blocked: Boolean, onConfirm: () -> Unit, onD
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (blocked) MuseTones.fill else MuseTones.action,
-                    contentColor = if (blocked) MaterialTheme.colorScheme.onSurface else Color.White,
+                    contentColor = if (blocked) MaterialTheme.colorScheme.onSurface else MuseTones.actionForeground,
                 ),
             ) {
                 Text(stringResource(if (blocked) R.string.nm_face_cost_anyway else R.string.nm_face_cost_go), fontSize = 14.sp, fontWeight = FontWeight.Medium)

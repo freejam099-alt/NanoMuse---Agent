@@ -40,7 +40,7 @@
   --color-fg: var(--om-fg);
   --color-muted: var(--om-muted);
   --color-accent: var(--om-accent);
-  --color-accent-fg: #ffffff;
+  --color-accent-fg: var(--om-accent-fg);
   --color-accent-soft: var(--om-accent-soft);
   --color-accent-soft-fg: var(--om-accent-soft-fg);
   --color-bubble-user: var(--om-bubble-user);
@@ -72,9 +72,12 @@
   --om-border: #e7e7ea;
   --om-fg: #111112;
   --om-muted: #6b6b71;
-  --om-accent: #0064d4;
+  --om-accent: #015cfb;
+  --om-accent-fg: #ffffff;
   --om-accent-soft: #e5f0ff;
   --om-accent-soft-fg: #012f80;
+  --om-brand-start: #015cfb;
+  --om-brand-end: #0186fb;
   --om-ink: #000000;
   --om-ink-fg: #ffffff;
   --om-bubble-user: #000000;
@@ -91,7 +94,8 @@ html[data-theme="dark"] {
   --om-border: #333337;
   --om-fg: #ffffff;
   --om-muted: #9d9da4;
-  --om-accent: #1793ff;
+  --om-accent: #58a6ff;
+  --om-accent-fg: #000000;
   --om-accent-soft: #1a2b4a;
   --om-accent-soft-fg: #e5f0ff;
   --om-ink: #ffffff;
@@ -117,6 +121,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
+}
+
+/* A quiet, static brand wash for welcome/setup and connecting hero surfaces only. */
+.nm-brand-hero {
+  background-image:
+    radial-gradient(ellipse 78% 50% at 50% 28%, color-mix(in srgb, var(--om-brand-start) 7%, transparent), transparent 100%),
+    radial-gradient(ellipse 60% 38% at 80% 70%, color-mix(in srgb, var(--om-brand-end) 4%, transparent), transparent 100%);
 }
 
 /* The words a settings search matched (web/src/settings-search.ts): the desktop

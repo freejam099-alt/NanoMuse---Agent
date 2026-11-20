@@ -126,7 +126,7 @@ fun UseItForScreen(instanceId: String, onDone: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 if (busy) {
-                    CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp, color = Color.White)
+                    CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp, color = io.github.nanomuse.ui.home.MuseTones.actionForeground)
                 } else {
                     Text(stringResource(R.string.nm_useit_use), fontWeight = FontWeight.Medium)
                 }

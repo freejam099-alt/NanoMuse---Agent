@@ -2,6 +2,7 @@ package io.github.nanomuse.ui.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import com.openminis.app.ui.theme.ChatColors
 
@@ -42,8 +43,24 @@ object MuseTones {
     val canvas: Color
         @Composable @ReadOnlyComposable get() = if (dark) Color(0xFF000000) else Color(0xFFF3F3F5)
 
-    /** Muse's action blue (the "Let's go" button). */
-    val action: Color = Color(0xFF0A66E4)
+    /** Accessible action blue: darker in light mode, brighter against dark surfaces. */
+    val action: Color
+        @Composable @ReadOnlyComposable get() = if (dark) Color(0xFF58A6FF) else Color(0xFF015CFB)
+
+    /** Foreground that keeps accessible contrast on the theme-dependent action fill. */
+    val actionForeground: Color
+        @Composable @ReadOnlyComposable get() = if (dark) Color(0xFF07111F) else Color.White
+
+    /** AI Brain 02 brand gradient; reserved for the selected navigation indicator. */
+    val brandGradient: Brush = Brush.horizontalGradient(
+        colors = listOf(Color(0xFF015CFB), Color(0xFF0186FB)),
+    )
+
+    /** Quiet, static setup-only wash that fades into the existing surface. */
+    val setupWash: Brush
+        @Composable @ReadOnlyComposable get() = Brush.verticalGradient(
+            colors = listOf(action.copy(alpha = 0.07f), action.copy(alpha = 0f)),
+        )
 
     private fun Color.luminance(): Float = 0.2126f * red + 0.7152f * green + 0.0722f * blue
 }

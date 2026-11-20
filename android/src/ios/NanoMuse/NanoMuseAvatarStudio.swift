@@ -772,6 +772,7 @@ struct NanoMuseFaceCostSheet: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(NanoMuseTones.action)
+            .foregroundStyle(NanoMuseTones.onPrimary)
             .disabled(studio.estimating)
             Button(AppLocalized("Not now")) { dismiss() }
                 .frame(maxWidth: .infinity)

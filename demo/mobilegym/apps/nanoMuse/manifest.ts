@@ -24,10 +24,10 @@ export const manifest: AppManifest = {
   // the web app's palette (web/src/index.css) and the Android app's action blue (MuseTones)
   theme: {
     colors: {
-      primary: '#0a66e4',
-      primaryDark: '#0859c8',
+      primary: '#015CFB',
+      primaryDark: '#015CFB',
       onPrimary: '#ffffff',
-      accent: '#0064d4',
+      accent: '#015CFB',
       background: '#fcfcfc',
       surface: '#ffffff',
       textPrimary: '#111112',
@@ -37,10 +37,10 @@ export const manifest: AppManifest = {
       navigationBarForeground: 'dark',
     },
     colorsDark: {
-      primary: '#1793ff',
-      primaryDark: '#0f7fe0',
-      onPrimary: '#ffffff',
-      accent: '#1793ff',
+      primary: '#58A6FF',
+      primaryDark: '#58A6FF',
+      onPrimary: '#000000',
+      accent: '#58A6FF',
       background: '#181819',
       surface: '#1c1c1e',
       textPrimary: '#ffffff',

@@ -348,7 +348,7 @@ function SessionSheet({ agent, id, device, deviceLabel, onClose }: { agent: stri
               <Square size={16} />
             </button>
           ) : (
-            <button type="submit" disabled={!text.trim() || sending || !canSend} aria-label={t("Send")} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white disabled:opacity-40">
+            <button type="submit" disabled={!text.trim() || sending || !canSend} aria-label={t("Send")} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-accent-fg disabled:opacity-40">
               {sending ? <Loader2 size={16} className="animate-spin" /> : <ArrowUp size={18} />}
             </button>
           )}

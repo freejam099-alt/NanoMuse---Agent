@@ -970,7 +970,7 @@ function Row({
         {hint && <div className="text-[12.5px] text-muted leading-snug">{hint}</div>}
       </div>
       {action && (
-        <button type="button" onClick={action.onClick} className="shrink-0 rounded-full bg-accent px-3 py-1.5 text-[12.5px] font-medium text-white">
+        <button type="button" onClick={action.onClick} className="shrink-0 rounded-full bg-accent px-3 py-1.5 text-[12.5px] font-medium text-accent-fg">
           {action.label}
         </button>
       )}
@@ -1196,4 +1196,3 @@ function Section({ title, children, id, plain = false }: { title: string; childr
     </section>
   );
 }
-

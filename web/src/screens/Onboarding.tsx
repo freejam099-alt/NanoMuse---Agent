@@ -136,7 +136,7 @@ export function Onboarding() {
 
       <div className="flex-1 overflow-y-auto px-5 pb-6">
         {step === "welcome" && (
-          <div className="flex h-full flex-col items-center justify-center text-center">
+          <div className="nm-brand-hero flex h-full flex-col items-center justify-center text-center">
             <Avatar profile={preview} size={96} />
             <h1 className="mt-6 text-[28px] font-bold tracking-tight">{t("Meet your nanoMuse")}</h1>
             <p className="mt-2 text-[15px] text-muted">{t("A personal agent of your own. Three things to know:")}</p>
@@ -206,7 +206,7 @@ export function Onboarding() {
                     onClick={() => void pickCloudModel()}
                     className="flex w-full items-center gap-3 rounded-3xl border border-accent/30 bg-accent/5 px-4 py-3.5 text-left"
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-accent text-white">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-accent text-accent-fg">
                       {cloudBusy ? <Loader2 size={18} className="animate-spin" /> : <Cloud size={18} />}
                     </span>
                     <span className="min-w-0 flex-1">
@@ -329,7 +329,7 @@ function Item({ done, locked, optional, title, body, onClick }: { done: boolean;
         aria-disabled={locked}
         className={cx("w-full flex items-center gap-3 rounded-3xl border px-4 py-3.5 text-left transition-colors", done ? "border-accent/30 bg-accent/5" : "border-border/70 bg-surface", locked && "opacity-50")}
       >
-        <span className={cx("flex h-7 w-7 shrink-0 items-center justify-center rounded-full", done ? "bg-accent text-white" : locked ? "bg-surface-2 text-muted" : "border border-border text-muted")}>
+        <span className={cx("flex h-7 w-7 shrink-0 items-center justify-center rounded-full", done ? "bg-accent text-accent-fg" : locked ? "bg-surface-2 text-muted" : "border border-border text-muted")}>
           {done ? <Check size={15} strokeWidth={3} /> : locked ? <Lock size={13} /> : null}
         </span>
         <span className="min-w-0 flex-1">

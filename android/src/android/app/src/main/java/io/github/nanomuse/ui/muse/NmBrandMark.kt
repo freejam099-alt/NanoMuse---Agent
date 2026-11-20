@@ -17,8 +17,8 @@ import com.openminis.app.R
 import io.github.nanomuse.ui.home.MuseTones
 
 /**
- * The app's icon as a hero: the brand's N in white on the blue rounded square. For the screens
- * that are about the app and the account — sign-in, the first-run door — where the face would
+ * The app's icon as a hero: Hugeicons AI Brain 02, free Stroke Rounded, with contrast-aware foreground on the blue
+ * rounded square. For screens about the app and account — sign-in, the first-run door — where the face would
  * promise a conversation that is not there yet.
  */
 @Composable
@@ -30,7 +30,7 @@ fun NmBrandMark(size: Dp = 104.dp, modifier: Modifier = Modifier) {
         Icon(
             painter = painterResource(R.drawable.ic_stat_nanomuse),
             contentDescription = null,
-            tint = Color.White,
+            tint = MuseTones.actionForeground,
             modifier = Modifier.size(size * 0.58f),
         )
     }

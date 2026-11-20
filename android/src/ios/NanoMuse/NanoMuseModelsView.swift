@@ -516,6 +516,7 @@ struct NanoMuseUseItForView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(NanoMuseTones.action)
+                    .foregroundStyle(NanoMuseTones.onPrimary)
                     .disabled(on.isEmpty)
                     Button(action: onDone) {
                         Text(AppLocalized("Not now"))

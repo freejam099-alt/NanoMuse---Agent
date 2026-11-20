@@ -1,8 +1,8 @@
 name: Android
 
-# A debug APK (arm64-v8a) for every push and pull request that touches the
-# Android tree. Debug-signed only: no keystore and no secrets are involved;
-# release builds happen on a developer machine with scripts/release-apk.sh.
+# A minified Release APK (arm64-v8a) for every push and pull request that touches
+# the Android tree. It uses the project signing key when configured, otherwise
+# the Gradle release variant falls back to the debug key for CI builds.
 
 on:
   push:
@@ -44,8 +44,8 @@ jobs:
               - "scripts/gen-android-icons.py"
               - ".github/workflows/android.yml"
 
-  debug-apk:
-    name: debug APK · arm64-v8a
+  release-apk:
+    name: Release APK · arm64-v8a
     needs: changes
     if: needs.changes.outputs.android == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
@@ -82,40 +82,39 @@ jobs:
           export PATH="$GOPATH/bin:$PATH" # gomobile / gobind land there
           bash scripts/android/build-natives.sh
 
-      - name: assembleDebug
+      - name: assembleRelease
         working-directory: android/src/android
         run: |
           export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
-          ./gradlew :app:assembleDebug --console=plain --no-daemon
+          ./gradlew :app:assembleRelease -Pnm.abi=arm64-v8a --console=plain --no-daemon
 
-      # Our unit tests (io.github.nanomuse.*: the guards, the hub client, the sandbox paths, the
-      # strings' parity), plus the upstream provider and sandbox tests, the two OpenMinis packages
-      # our edits touch (#333, #334, #335). Same Gradle invocation as AGENTS.md; the compiled
-      # classes are warm.
-      - name: Unit tests
+      # The unit tests and instrumentation source set are checked against Release as well.
+      # The on-device tests cannot run here (no emulator), so compile them without installing.
+      - name: Release unit tests
         working-directory: android/src/android
         run: |
           export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
-          ./gradlew :app:testDebugUnitTest --tests 'io.github.nanomuse.*' \
+          ./gradlew :app:testReleaseUnitTest --tests 'io.github.nanomuse.*' \
             --tests 'com.openminis.app.provider.*' --tests 'com.openminis.app.sandbox.*' \
             --console=plain --no-daemon
 
-      # The on-device tests cannot run here (no emulator), but the source set must keep
-      # compiling or io.github.nanomuse.reach.ReachHubInstrumentedTest never runs anywhere (#332).
-      - name: androidTest compiles
+      - name: Release androidTest compiles
         working-directory: android/src/android
         run: |
           export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
-          ./gradlew :app:compileDebugAndroidTestKotlin --console=plain --no-daemon
+          ./gradlew :app:compileReleaseAndroidTestKotlin --console=plain --no-daemon
 
-      - name: Badging
+      - name: Verify Release APK and ARM64 ABI
         run: |
           bt="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
-          "$bt/aapt" dump badging android/src/android/app/build/outputs/apk/debug/app-debug.apk | grep -E "^package:|application-label:|native-code"
+          apk=android/src/android/app/build/outputs/apk/release/app-release.apk
+          test -f "$apk"
+          "$bt/aapt" dump badging "$apk" | grep -E "^package:|application-label:|native-code"
+          "$bt/aapt" dump badging "$apk" | grep -q "^native-code:.*arm64-v8a"
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: nanoMuse-debug-apk
-          path: android/src/android/app/build/outputs/apk/debug/app-debug.apk
+          name: nanoMuse-release-apk-arm64-v8a
+          path: android/src/android/app/build/outputs/apk/release/app-release.apk
           retention-days: 14
           if-no-files-found: error

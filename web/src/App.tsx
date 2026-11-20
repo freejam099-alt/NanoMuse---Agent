@@ -183,12 +183,19 @@ export default function App() {
                     onClick={() => setTab(tab.id)}
                     aria-label={t(tab.label)}
                     aria-current={active ? "page" : undefined}
-                    className={cx("flex h-[46px] w-full items-center justify-center", active ? "text-ink-fg" : "text-muted hover:text-fg")}
+                    className={cx("flex h-[46px] w-full items-center justify-center", active ? "text-white" : "text-muted hover:text-fg")}
                   >
-                    <span className={cx("relative flex h-[46px] w-full max-w-[60px] items-center justify-center rounded-full transition-colors duration-300", active && "bg-ink")}>
-                      {tab.icon(active)}
+                    <span className="relative flex h-[46px] w-full max-w-[60px] items-center justify-center rounded-full">
+                      <span
+                        aria-hidden="true"
+                        className={cx(
+                          "absolute inset-0 rounded-full bg-gradient-to-r from-[#015CFB] to-[#0186FB] transition-[opacity,transform] duration-250 motion-reduce:transition-none",
+                          active ? "scale-100 opacity-100" : "scale-75 opacity-0",
+                        )}
+                      />
+                      <span className="relative z-10">{tab.icon(active)}</span>
                       {badge > 0 && (
-                        <span className="absolute right-2.5 top-1 flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white">
+                        <span className="absolute right-2.5 top-1 z-20 flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white">
                           {badge}
                         </span>
                       )}
@@ -216,7 +223,7 @@ export default function App() {
 function Connecting({ error }: { error: string | null }) {
   const t = useT();
   return (
-    <div className="mx-auto flex h-[100dvh] max-w-sm flex-col items-center justify-center px-6 text-center">
+    <div className="nm-brand-hero mx-auto flex h-[100dvh] max-w-sm flex-col items-center justify-center px-6 text-center">
       {/* the web's splash: the app's mark, no face (the face is the Muse, who is not here yet) */}
       <BrandMark size={72} />
       {error ? (
@@ -240,7 +247,7 @@ function TokenGate() {
   const [value, setValue] = useState("");
   const t = useT();
   return (
-    <div className="mx-auto flex h-[100dvh] max-w-md flex-col items-center justify-center px-6 text-center">
+    <div className="nm-brand-hero mx-auto flex h-[100dvh] max-w-md flex-col items-center justify-center px-6 text-center">
       <BrandMark size={88} />
       <h1 className="mt-4 text-[22px] font-bold">{t("Connect to your nanoMuse")}</h1>
       <p className="mt-2 text-[14px] text-muted">

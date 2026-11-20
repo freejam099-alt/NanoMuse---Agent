@@ -385,6 +385,7 @@ struct NanoMuseAvatarCostCard: View {
                 Button(studio.estimate?.affordable == false ? AppLocalized("Try anyway") : AppLocalized("Draw it")) { flow.confirmDraw() }
                     .buttonStyle(.borderedProminent)
                     .tint(NanoMuseTones.action)
+                    .foregroundStyle(NanoMuseTones.onPrimary)
                     .disabled(studio.estimating)
                 Button(AppLocalized("Not now")) { flow.cancel() }
             }

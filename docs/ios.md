@@ -83,8 +83,8 @@ Applied by `python scripts/rebrand.py` (idempotent; run after every upstream pul
   `HTTP-Referer` keeps pointing at OpenMinis, as on Android: it is attribution, not identity.
 - **Versions.** `MARKETING_VERSION` and `CURRENT_PROJECT_VERSION` follow the Android
   `versionName` / `versionCode`; CI overrides the build number with the run number.
-- **Look.** AccentColor `#015CFB` / `#58A6FF` instead of iOS blue; the one-stroke N as the app
-  icon (white tile, brand gradient; a dark tile for the dark appearance) and as the four skins of
+- **Look.** AccentColor `#015CFB` / `#58A6FF` instead of iOS blue; Hugeicons AI Brain 02 in the
+  free Stroke Rounded style as the app icon (white tile, brand gradient; a dark tile for the dark appearance) and as the four skins of
   the in-app icon picker; the agent's header glyph 🐾 instead of ✨.
 - **About.** Links to this repository and its issues, the privacy page, nanoMuse's own tagline,
   and a Credits section: based on OpenMinis 1.13 (GPL-3.0), not affiliated with Meta.

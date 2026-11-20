@@ -163,7 +163,7 @@ apps/nanoMuse/
 ├── hooks/useNanoMuseGestures.ts
 ├── data/                     defaults
 ├── res/strings.ts            简体中文 and English for the shell, the notifications and the capsule
-├── res/icons.tsx             the shell's icons; the launcher icon is the nanoMuse mark
-├── res/mark.tsx              the mark: the one-stroke N of assets/brand/nanomuse-mark.svg, as the Android launcher icon
+├── res/icons.tsx             the shell's icons; the launcher icon is the nanoMuse brand mark
+├── res/mark.tsx              AI Brain 02 (free Stroke Rounded), matching the Android launcher icon
 └── res/dragon-idle.webp      the dragon's face at rest, for the welcome page (web/public/avatars)
 ```

@@ -172,7 +172,7 @@ fun OwnClipChooserHost(state: OwnClipChooserState) {
                     },
                     modifier = Modifier.fillMaxWidth().height(48.dp),
                     shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                 ) {
                     Text(stringResource(R.string.nm_own_clip_use), fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
                 }

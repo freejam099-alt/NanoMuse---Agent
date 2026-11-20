@@ -1,7 +1,9 @@
 package io.github.nanomuse.ui.home
 
-import androidx.compose.animation.animateColorAsState
+import android.provider.Settings
+import androidx.compose.animation.animateFloatAsState
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.matchParentSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,8 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -44,7 +49,7 @@ import io.github.nanomuse.ui.chat.NM_CHAT_COMPOSER_BOTTOM_GAP
 /**
  * nanoMuse's bottom bar: a floating frosted-glass pill, five glyphs, icons only. The pill blurs
  * whatever is behind it (Haze, in the Pixel taskbar's manner) and carries a hairline edge. The
- * current tab shows a filled glyph on a soft indicator pill that springs in; the others are
+ * current tab shows a filled glyph on a gradient indicator pill that springs in; the others are
  * outlined. No labels: the fill and the indicator are the state.
  */
 @Composable
@@ -57,14 +62,18 @@ fun MuseBottomBar(
     // Hoisted out of the hazeEffect block: Haze 1.x's block is not a @Composable scope,
     // so MaterialTheme lookups cannot happen inside it.
     val barBackground = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.55f)
-    // The selected tab: a white disc with a black glyph in the dark theme,
-    // inverted in light. Follows the chat background, not the system setting,
-    // since the app has its own theme override.
+    // Follows the chat background, not the system setting, since the app has its own theme override.
     val nmDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val chatBackground by io.github.nanomuse.ui.chat.rememberChatBackground()
     val chatCanvas = chatBackground.color(com.openminis.app.ui.theme.ChatColors)
-    val nmSelectedBg = if (nmDark) Color.White else Color.Black
-    val nmSelectedFg = if (nmDark) Color.Black else Color.White
+    val context = LocalContext.current
+    val reduceMotion = remember(context) {
+        Settings.Global.getFloat(
+            context.contentResolver,
+            Settings.Global.ANIMATOR_DURATION_SCALE,
+            1f,
+        ) == 0f
+    }
     val window = LocalConfiguration.current
     val surroundExtent = maxOf(window.screenWidthDp, window.screenHeightDp).dp
     Box(
@@ -117,10 +126,9 @@ fun MuseBottomBar(
         ) {
             HomeTab.entries.forEach { tab ->
                 val isSelected = tab == selected
-                val indicator by animateColorAsState(
-                    targetValue = if (isSelected) nmSelectedBg
-                    else Color.Transparent,
-                    animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+                val indicatorAlpha by animateFloatAsState(
+                    targetValue = if (isSelected) 1f else 0f,
+                    animationSpec = if (reduceMotion) snap() else spring(stiffness = Spring.StiffnessMediumLow),
                     label = "nmTabIndicator",
                 )
                 // Five slots share the pill's width; the indicator disc keeps
@@ -144,14 +152,19 @@ fun MuseBottomBar(
                             .widthIn(max = TAB_WIDTH)
                             .fillMaxWidth()
                             .height(TAB_HEIGHT)
-                            .clip(CircleShape)
-                            .background(indicator),
+                            .clip(CircleShape),
                         contentAlignment = Alignment.Center,
                     ) {
+                        Box(
+                            Modifier
+                                .matchParentSize()
+                                .background(MuseTones.brandGradient, CircleShape)
+                                .graphicsLayer { alpha = indicatorAlpha },
+                        )
                         Icon(
                             imageVector = if (isSelected) tab.selectedIcon else tab.icon,
                             contentDescription = stringResource(tab.label),
-                            tint = if (isSelected) nmSelectedFg
+                            tint = if (isSelected) Color.White
                             else MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(26.dp),
                         )

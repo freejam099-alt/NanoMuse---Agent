@@ -659,6 +659,7 @@ struct NanoMuseGoalCategorySheet: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(NanoMuseTones.action)
+            .foregroundStyle(NanoMuseTones.onPrimary)
         }
         .padding(22)
     }

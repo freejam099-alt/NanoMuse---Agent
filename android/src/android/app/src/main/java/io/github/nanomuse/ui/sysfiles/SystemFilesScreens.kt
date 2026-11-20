@@ -345,7 +345,7 @@ fun SystemFileScreen(kind: SystemFiles, onBack: () -> Unit, onOpenMemory: () -> 
                             Toast.makeText(context, R.string.nm_sysfile_saved, Toast.LENGTH_SHORT).show()
                         },
                         shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                        colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                     ) { Text(stringResource(R.string.nm_save), fontWeight = FontWeight.SemiBold) }
                 }
             }
@@ -480,7 +480,7 @@ fun MemoryImportScreen(onBack: () -> Unit) {
                 },
                 enabled = pasted.isNotBlank(),
                 shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                 modifier = Modifier.fillMaxWidth().height(46.dp),
             ) { Text(stringResource(R.string.nm_import_append), fontSize = 15.sp, fontWeight = FontWeight.SemiBold) }
             Spacer(Modifier.height(10.dp))
@@ -494,7 +494,7 @@ fun MemoryImportScreen(onBack: () -> Unit) {
 private fun StepLabel(n: String, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(Modifier.size(22.dp).background(MuseTones.action, CircleShape), contentAlignment = Alignment.Center) {
-            Text(n, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Text(n, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MuseTones.actionForeground)
         }
         Spacer(Modifier.width(10.dp))
         Text(text, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)

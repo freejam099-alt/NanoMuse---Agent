@@ -696,6 +696,7 @@ struct NanoMuseAvatarShareSheet: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(NanoMuseTones.action)
+            .foregroundStyle(NanoMuseTones.onPrimary)
             .disabled(previews == nil)
         }
         .padding(20)

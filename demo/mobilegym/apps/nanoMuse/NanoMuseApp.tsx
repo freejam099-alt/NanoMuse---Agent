@@ -48,7 +48,11 @@ function AppInner() {
 export default function NanoMuseApp() {
   const { isDark } = useDarkMode();
   const colors = isDark ? { ...manifest.theme.colors, ...(manifest.theme.colorsDark ?? {}) } : manifest.theme.colors;
-  const cssVars = themeToCssVars(applySkinToThemeColors(colors)) as CSSProperties;
+  const cssVars = {
+    ...themeToCssVars(applySkinToThemeColors(colors)),
+    '--nm-brand-start': '#015CFB',
+    '--nm-brand-end': '#0186FB',
+  } as CSSProperties;
   return (
     <div className="h-full w-full" style={cssVars}>
       <MemoryRouter>

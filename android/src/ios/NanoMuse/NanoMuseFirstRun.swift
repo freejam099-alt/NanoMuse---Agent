@@ -140,7 +140,15 @@ struct NanoMuseFirstRunView: View {
             .transition(reduceMotion ? .opacity : .asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .leading).combined(with: .opacity)))
             .animation(.easeInOut(duration: 0.26), value: stage)
         }
-        .background(NanoMuseTones.surface.ignoresSafeArea())
+        .background {
+            ZStack {
+                NanoMuseTones.surface
+                if stage == .welcome {
+                    NanoMuseTones.brandWash
+                }
+            }
+            .ignoresSafeArea()
+        }
         .sheet(isPresented: $showSignIn) { NavigationStack { NanoMuseCloudView() } }
         // Signed in: the sheet has done its job and goes, so the next page (the password, the
         // source) is in view at once instead of behind the account page.
@@ -374,14 +382,16 @@ struct NanoMuseSetupPage<Hero: View, Content: View>: View {
             VStack(spacing: 10) {
                 Button(action: onPrimary) {
                     HStack {
-                        if busy { ProgressView().tint(.white) }
+                        if busy { ProgressView().tint(NanoMuseTones.onPrimary) }
                         Text(primaryLabel).font(.headline)
                     }
+                    .foregroundStyle(NanoMuseTones.onPrimary)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 6)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(NanoMuseTones.action)
+                .foregroundStyle(NanoMuseTones.onPrimary)
                 .controlSize(.large)
                 .disabled(busy)
                 if let secondaryLabel, let onSecondary {

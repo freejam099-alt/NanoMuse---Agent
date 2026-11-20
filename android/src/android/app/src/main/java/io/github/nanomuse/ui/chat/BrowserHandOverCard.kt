@@ -100,7 +100,7 @@ fun BrowserHandOverHost(viewModel: ChatViewModel) {
                     onClick = { viewModel.openBrowserSheetForUrl(p.url) },
                     modifier = Modifier.fillMaxWidth().height(46.dp),
                     shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                 ) { Text(stringResource(R.string.nm_handover_open), fontSize = 15.sp, fontWeight = FontWeight.SemiBold) }
                 Spacer(Modifier.height(8.dp))
                 Button(
@@ -140,7 +140,10 @@ fun BrowserHandOverBanner(accent: Color) {
         Button(
             onClick = { BrowserHandOver.finish() },
             shape = CircleShape,
-            colors = ButtonDefaults.buttonColors(containerColor = accent, contentColor = Color.White),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = accent,
+                contentColor = if (accent == MuseTones.action) MuseTones.actionForeground else Color.White,
+            ),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 6.dp),
         ) { Text(stringResource(R.string.nm_handover_done), fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
     }

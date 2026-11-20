@@ -451,11 +451,11 @@ private fun ConnectorSheet(connector: Connector, state: Connectors.State, elsewh
                     onClick = { connect() },
                     enabled = !busy && (!wantsKey || key.isNotBlank()) && (!wantsClient || wantsKey || clientId.isNotBlank()),
                     shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action),
+                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                     modifier = Modifier.fillMaxWidth().height(48.dp),
                 ) {
                     if (busy) {
-                        CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp, color = Color.White)
+                        CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp, color = MuseTones.actionForeground)
                     } else {
                         Text(stringResource(if (state == Connectors.State.NeedsSignIn) R.string.nm_connectors_sign_in else R.string.nm_connectors_connect))
                     }

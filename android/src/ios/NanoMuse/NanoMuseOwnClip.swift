@@ -451,6 +451,7 @@ struct NanoMuseOwnClipPreview: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(NanoMuseTones.action)
+            .foregroundStyle(NanoMuseTones.onPrimary)
             Button(AppLocalized("Cancel")) {
                 onCancel()
             }

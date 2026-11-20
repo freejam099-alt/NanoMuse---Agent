@@ -639,7 +639,29 @@ enum NanoMuseTones {
     static let disc = Color(uiColor: UIColor { $0.userInterfaceStyle == .dark ? UIColor(red: 0.165, green: 0.165, blue: 0.18, alpha: 1) : UIColor(red: 0.945, green: 0.937, blue: 0.922, alpha: 1) })
     static let hairline = Color(uiColor: UIColor { $0.userInterfaceStyle == .dark ? UIColor(red: 0.227, green: 0.227, blue: 0.235, alpha: 1) : UIColor(red: 0.898, green: 0.898, blue: 0.918, alpha: 1) })
     static let canvas = Color(uiColor: UIColor { $0.userInterfaceStyle == .dark ? .black : UIColor(red: 0.953, green: 0.953, blue: 0.961, alpha: 1) })
-    static let action = Color(red: 0.039, green: 0.4, blue: 0.894)
+    /// Accessible AI Brain 02 primary: deep blue in light mode, brighter blue in dark mode.
+    static let primary = Color(uiColor: UIColor {
+        $0.userInterfaceStyle == .dark
+            ? UIColor(red: 88.0 / 255, green: 166.0 / 255, blue: 1, alpha: 1) // #58A6FF
+            : UIColor(red: 1.0 / 255, green: 92.0 / 255, blue: 251.0 / 255, alpha: 1) // #015CFB
+    })
+    /// Foreground paired with `primary`: black in dark mode, white in light mode.
+    static let onPrimary = Color(uiColor: UIColor {
+        $0.userInterfaceStyle == .dark ? .black : .white
+    })
+    /// AI Brain 02's static blue sweep, shared by the selected tab and welcome wash.
+    static let brandGradient = LinearGradient(
+        colors: [Color(red: 1.0 / 255, green: 92.0 / 255, blue: 251.0 / 255), Color(red: 1.0 / 255, green: 134.0 / 255, blue: 251.0 / 255)],
+        startPoint: .leading,
+        endPoint: .trailing
+    )
+    /// A restrained, static wash; apply only to the first-run welcome surface.
+    static let brandWash = LinearGradient(
+        colors: [Color(red: 1.0 / 255, green: 92.0 / 255, blue: 251.0 / 255).opacity(0.12), Color(red: 1.0 / 255, green: 134.0 / 255, blue: 251.0 / 255).opacity(0.025)],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+    static let action = primary
     /// The chat's ink (Android's `ChatColors.userBubble` and `sendButton` since #331): your
     /// message pill, the send disc and the scroll-to-latest disc. Black on the white canvas in
     /// light, white on the black canvas in dark; `onInk` is what sits on it, the canvas colour.
@@ -648,10 +670,9 @@ enum NanoMuseTones {
     /// The agent's message pill, a shade off the canvas (Android's `ChatColors.assistantBubble`:
     /// #F2F2F7 in light, #1C1C1E in dark). The composer pill keeps `bubble`.
     static let agentPill = Color(uiColor: UIColor { $0.userInterfaceStyle == .dark ? UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1) : UIColor(red: 0.949, green: 0.949, blue: 0.969, alpha: 1) })
-    /// The pill bar's indicator disc and the glyph on it: the same ink as the chat, black with
-    /// a white glyph in light and white with a black glyph in dark, as Android's MuseBottomBar.
-    static let tabIndicator = ink
-    static let tabIndicatorGlyph = onInk
+    /// The selected pill's brand gradient and its white glyph.
+    static let tabIndicator = brandGradient
+    static let tabIndicatorGlyph = Color.white
 }
 
 /// Whether the UI runs in Chinese right now (the in-app override wins).

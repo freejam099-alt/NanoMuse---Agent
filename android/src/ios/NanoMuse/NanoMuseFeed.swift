@@ -517,7 +517,7 @@ struct NanoMuseFeedRoom: View {
                     .buttonStyle(.plain)
                     Button(AppLocalized("Got it")) { acknowledgeIntro() }
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(NanoMuseTones.onPrimary)
                         .padding(.horizontal, 22).padding(.vertical, 10)
                         .background(NanoMuseTones.action, in: Capsule())
                         .buttonStyle(.plain)
@@ -552,7 +552,7 @@ struct NanoMuseFeedRoom: View {
                 } else {
                     Button(AppLocalized("Write it now")) { NanoMuseFeedFlow.generateNow() }
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(NanoMuseTones.onPrimary)
                         .padding(.horizontal, 26).padding(.vertical, 11)
                         .background(NanoMuseTones.action, in: Capsule())
                         .buttonStyle(.plain)
@@ -680,6 +680,7 @@ struct NanoMusePostDetail: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(NanoMuseTones.action)
+                    .foregroundStyle(NanoMuseTones.onPrimary)
                 }
                 .padding(20)
             }

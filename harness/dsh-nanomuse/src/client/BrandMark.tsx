@@ -1,17 +1,18 @@
 /**
- * The app's own mark (docs/brand.md): the N stroke on its white squircle tile with a hairline
- * edge, drawn inline from `assets/brand/nanomuse-icon.svg` so the bundle fetches nothing. It
- * stands for the app where the app speaks for itself — the sign-in pages, the permissions
- * page — never for the Muse: the face is the Muse, the mark is the app, and the mark never
- * goes in the chat. The tile stays white in the dark theme too (the brand's rule).
+ * The app's identity mark: Hugeicons AI Brain 02 (free Stroke Rounded) on the white tile.
+ * It stands for the app on sign-in and permission pages, never for the Muse; the face is the
+ * agent's, and the mark does not appear in chat. The geometry follows assets/brand/nanomuse-mark.svg.
+ * Hugeicons attribution and MIT license: THIRD_PARTY_NOTICES.md.
  */
 import { createElement as h, useId, type ReactNode } from 'react'
 
-/** The stroke, in the tile's 100 × 100 coordinates (one filled path, the brand's gradient). */
-const STROKE = 'M50.02 79.14C45.88 78.24 43.14 74.48 41.94 68.06C41.21 64.11 41.07 57.03 41.57 48.4C42.01 40.73 41.95 38.95 41.25 38.95C40.84 38.95 38.78 40.99 37.31 42.85C35.79 44.78 32.24 49.66 29.36 53.81C24.1 61.36 23.23 62.5 21.73 63.62C20.32 64.69 19.77 64.88 18.1 64.89C16.81 64.9 16.55 64.85 15.8 64.51C14.63 63.95 13.5 62.79 13.09 61.7C12.38 59.79 12.36 58.4 13.03 56.4C15.13 50.07 30.84 29.92 37.95 24.43C40.06 22.8 42.52 21.8 44.44 21.8C47.3 21.8 50.22 23.43 51.98 26.02C54.35 29.48 55.41 36.71 55.18 47.82C54.87 62.95 54.87 63.03 55.36 63.2C55.47 63.23 56.02 62.78 56.6 62.19C58.17 60.58 59.77 58.46 67.56 47.75C74.06 38.79 76.77 35.7 79.17 34.51C80.29 33.94 80.32 33.94 81.98 33.94C83.54 33.95 83.71 33.97 84.59 34.39C86.34 35.22 87.54 36.65 88.0 38.44C88.3 39.61 88.28 40.72 87.94 42.08C87.45 43.98 86.62 45.31 82.58 50.7C81.37 52.32 78.99 55.53 77.3 57.82C71.35 65.91 68.99 68.81 65.78 72.03C63.02 74.79 60.71 76.55 58.18 77.81C55.42 79.19 52.47 79.67 50.02 79.14Z'
+const PATHS = [
+  'M12 4.99988C12 3.34302 10.6569 1.99988 9 1.99988C7.34315 1.99988 6 3.34302 6 4.99988C6 5.52371 5.6621 6.06155 5.17714 6.25958C3.89998 6.78109 3 8.03502 3 9.49988C3 10.0915 3.14681 10.6487 3.40597 11.1372C3.69627 11.6845 3.55702 12.5225 3.10536 12.9465C2.42496 13.5852 2 14.4931 2 15.4999C2 17.4329 3.567 18.9999 5.5 18.9999C5.76422 18.9999 5.99765 19.2378 6.04124 19.4984C6.27868 20.918 7.513 21.9999 9 21.9999C10.6569 21.9999 12 20.6567 12 18.9999',
+  'M12 4.99988C12 3.34302 13.3431 1.99988 15 1.99988C16.6569 1.99988 18 3.34302 18 4.99988C18 5.52371 18.3379 6.06155 18.8229 6.25958C20.1 6.78109 21 8.03502 21 9.49988C21 10.0915 20.8532 10.6487 20.594 11.1372C20.3037 11.6845 20.443 12.5225 20.8946 12.9465C21.575 13.5852 22 14.4931 22 15.4999C22 17.4329 20.433 18.9999 18.5 18.9999C18.2358 18.9999 18.0024 19.2378 17.9588 19.4984C17.7213 20.918 16.487 21.9999 15 21.9999C13.3431 21.9999 12 20.6567 12 18.9999',
+  'M12 10.1249V11.9999M12 11.9999V13.8749M12 11.9999H10.5M12 11.9999H13.5M15 11.9999L13.6987 11.5661C13.1015 11.367 12.6328 10.8984 12.4338 10.3012L12 8.99988L11.5662 10.3012C11.3672 10.8985 10.8985 11.3672 10.3013 11.5662L9 11.9999L10.3013 12.4337C10.8985 12.6327 11.3672 13.1014 11.5662 13.6986L12 14.9999L12.4338 13.6986C12.6328 13.1014 13.1015 12.6327 13.6987 12.4337L15 11.9999Z',
+]
 
 export function BrandMark({ size = 72, className }: { size?: number; className?: string }): ReactNode {
-  // one gradient per instance: two marks on one page must not share an id
   const id = `nm-mark-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
   return h('svg', {
     width: size,
@@ -23,10 +24,18 @@ export function BrandMark({ size = 72, className }: { size?: number; className?:
     focusable: false,
   },
     h('defs', null,
-      h('linearGradient', { id, gradientUnits: 'userSpaceOnUse', x1: 12.6, y1: 50, x2: 87.8, y2: 50 },
+      h('linearGradient', { id, gradientUnits: 'userSpaceOnUse', x1: 14, y1: 50, x2: 86, y2: 50 },
         h('stop', { offset: 0, stopColor: '#015CFB' }),
         h('stop', { offset: 1, stopColor: '#0186FB' }))),
-    // the tile with its hairline edge, so it keeps its shape on a white page
     h('rect', { x: 0.3, y: 0.3, width: 99.4, height: 99.4, rx: 27, ry: 27, fill: '#FFFFFF', stroke: '#D9D9DE', strokeWidth: 0.6 }),
-    h('path', { d: STROKE, fill: `url(#${id})` }))
+    h('g', { transform: 'translate(6.8 6.8) scale(3.6)' },
+      ...PATHS.map((d, key) => h('path', {
+        key,
+        d,
+        fill: 'none',
+        stroke: `url(#${id})`,
+        strokeWidth: 1.5,
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round',
+      }))))
 }

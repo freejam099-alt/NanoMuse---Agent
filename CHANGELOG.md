@@ -4,6 +4,7 @@ All notable changes to nanoMuse. The format follows [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+- Replaced the app identity mark across Android, iOS, web and desktop with Hugeicons AI Brain 02 in the free Stroke Rounded style; regenerated launcher, favicon, demo and README artwork from one source. UI control icons and mascot animation are unchanged.
 - Kept completed sensitive actions and file writes in view after message or token limits removed their tool exchanges, helping long tasks avoid repeats. For #938.
 - Asked before repeating an identical sensitive action in the same conversation, including concurrent calls and retries after cancellation left an unknown outcome. For #938.
 - Added the Levea video editor to the connector catalogue for desktop and phones, with OAuth sign-in.

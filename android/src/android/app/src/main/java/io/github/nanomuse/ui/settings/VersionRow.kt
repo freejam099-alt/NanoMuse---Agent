@@ -96,12 +96,12 @@ fun VersionRow() {
         }
         Spacer(Modifier.width(12.dp))
         if (s.newer) {
-            Surface(shape = CircleShape, color = MuseTones.action) {
+            Surface(shape = CircleShape, color = MuseTones.action, contentColor = MuseTones.actionForeground) {
                 Text(
                     text = stringResource(R.string.nm_version_update),
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.White,
+                    color = MuseTones.actionForeground,
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
                 )
             }

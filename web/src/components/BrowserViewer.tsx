@@ -175,7 +175,7 @@ export function BrowserViewer({ thread, eventId, onClose }: { thread: string; ev
                 autoComplete="off"
                 autoCapitalize="off"
               />
-              <button type="submit" disabled={!text || !!busy} aria-label={t("Type")} className="rounded-full bg-accent p-2.5 text-white disabled:opacity-40">
+              <button type="submit" disabled={!text || !!busy} aria-label={t("Type")} className="rounded-full bg-accent p-2.5 text-accent-fg disabled:opacity-40">
                 {busy === "type" ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
               </button>
               <button
@@ -269,7 +269,7 @@ export function BrowserViewer({ thread, eventId, onClose }: { thread: string; ev
                 type="button"
                 onClick={takeOver}
                 disabled={pending === "on"}
-                className="flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-2 text-[13px] font-semibold text-white disabled:opacity-60"
+                className="flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-2 text-[13px] font-semibold text-accent-fg disabled:opacity-60"
               >
                 <Hand size={14} /> {t("Take over")}
               </button>

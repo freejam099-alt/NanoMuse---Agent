@@ -1,6 +1,6 @@
 // Icons used by the nanoMuse shell. Monochrome lucide icons, colored with currentColor — except
-// the launcher icon, which is the nanoMuse mark in its own colours (res/mark.tsx, the same N the
-// Android app's launcher icon has).
+// the launcher icon, which is AI Brain 02 in nanoMuse's brand colors (res/mark.tsx, like the
+// Android app's launcher icon).
 import { AlertTriangle, ChevronLeft, Cloud, Hand, KeyRound, Link2, MessageCircle, Monitor, RefreshCw, Unplug } from 'lucide-react';
 import { NanoMuseMark } from './mark';
 

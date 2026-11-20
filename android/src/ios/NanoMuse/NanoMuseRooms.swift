@@ -208,6 +208,7 @@ private struct NanoMuseIdeaSheet: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(NanoMuseTones.action)
+            .foregroundStyle(NanoMuseTones.onPrimary)
             if idea.kind != .chat {
                 Button {
                     onAct(.chat)

@@ -359,10 +359,10 @@ fun AvatarStudioScreen(onBack: () -> Unit, onOpenSoul: () -> Unit, onOpenMediaMo
                         enabled = !generating,
                         modifier = Modifier.fillMaxWidth().height(48.dp),
                         shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White, disabledContainerColor = MuseTones.action.copy(alpha = 0.5f), disabledContentColor = Color.White),
+                        colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground, disabledContainerColor = MuseTones.action.copy(alpha = 0.5f), disabledContentColor = MuseTones.actionForeground),
                     ) {
                         if (generating) {
-                            CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = Color.White)
+                            CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = MuseTones.actionForeground)
                             Spacer(Modifier.width(10.dp))
                             Text(stringResource(R.string.nm_avatar_generating), fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
                         } else {
@@ -430,7 +430,7 @@ fun AvatarStudioScreen(onBack: () -> Unit, onOpenSoul: () -> Unit, onOpenMediaMo
                                     onClick = { selected?.let { AvatarStudio.adopt(context, it) } },
                                     modifier = Modifier.fillMaxWidth().height(48.dp),
                                     shape = CircleShape,
-                                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                                 ) {
                                     Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
                                     Spacer(Modifier.width(8.dp))
@@ -557,7 +557,7 @@ private fun CandidateTile(slot: AvatarStudio.Slot, index: Int, selected: Boolean
                 )
                 if (selected) {
                     Box(Modifier.align(Alignment.TopEnd).padding(10.dp).size(28.dp).background(MuseTones.action, CircleShape), contentAlignment = Alignment.Center) {
-                        Icon(Icons.Filled.Check, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
+                        Icon(Icons.Filled.Check, contentDescription = null, tint = MuseTones.actionForeground, modifier = Modifier.size(18.dp))
                     }
                 }
             }

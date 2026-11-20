@@ -1,7 +1,7 @@
 import { cx } from "../util";
 
 /**
- * The app's own mark (docs/brand.md): the N stroke on its white tile with a hairline edge,
+ * The app's own mark (docs/brand.md): Hugeicons AI Brain 02 on its white tile with a hairline edge,
  * `public/icon.svg`. It stands for the app where the app speaks for itself — the sign-in
  * door, the first seconds before the socket is up, the token gate — never for the Muse: the
  * face is the Muse, the mark is the app. The tile stays white in the dark theme too.

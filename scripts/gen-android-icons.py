@@ -1,19 +1,9 @@
 #!/usr/bin/env python3
 """Generate the nanoMuse launcher and status-bar icons for android/ from assets/brand/.
 
-Idempotent; re-run after every upstream pull (CONTRIBUTING.md). Writes:
-
-- drawable/ic_launcher_foreground_nm.xml       the one-stroke N, gradient fill, 108dp canvas
-- drawable/ic_launcher_foreground_nm_dark.xml  the same path, white (the "Dark" icon skin)
-- drawable/ic_launcher_monochrome.xml          the same path, flat (Android 13+ themed icons)
-- drawable/ic_stat_nanomuse.xml                24dp flat mark for notification small icons
-- mipmap-anydpi-v26/ic_launcher*.xml           the three adaptive icons (auto / light / dark)
-- values*/ic_launcher_background.xml, values/ic_launcher_alt_colors.xml  tile colours
-- mipmap-*/ic_launcher*.png                    legacy rasters, when Playwright is installed
-
-Geometry: the mark's tile is 0..100 units == the 72dp visible area of a 108dp adaptive
-icon, so x' = 18 + 0.72 * x. The farthest point of the mark from the centre is ~29dp,
-inside the 33dp circle that themed icons and round masks keep.
+Idempotent; re-run after every upstream pull (CONTRIBUTING.md). Writes adaptive icons,
+Android 13 monochrome icons, notifications and the legacy density PNGs. The source
+is Hugeicons AI Brain 02, free Stroke Rounded; see THIRD_PARTY_NOTICES.md.
 """
 
 from __future__ import annotations
@@ -21,6 +11,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 BRAND = ROOT / "assets" / "brand"
@@ -31,65 +22,111 @@ STROKE_END = "#0186FB"
 TILE_LIGHT = "#FFFFFF"
 TILE_DARK = "#0F1B33"
 SCALE, OFFSET = 0.72, 18.0
-TOKEN = re.compile(r"[MLCZ]|-?\d*\.?\d+")
+TILE_STROKE_WIDTH = 5.4  # 1.5 Hugeicons stroke, scaled 3.6× into the 100-unit tile.
+TOKEN = re.compile(r"[MCVLHZ]|[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?")
+ARITY = {"M": 2, "L": 2, "C": 6, "V": 1, "H": 1, "Z": 0}
 
 
-def mark_path() -> str:
-    svg = (BRAND / "nanomuse-mark.svg").read_text(encoding="utf-8")
-    match = re.search(r'<path[^>]*\sd="([^"]+)"', svg)
-    if not match:
-        sys.exit("assets/brand/nanomuse-mark.svg: no <path d=...>")
-    return match.group(1)
+def mark_paths() -> list[str]:
+    root = ET.parse(BRAND / "nanomuse-mark.svg").getroot()
+    paths = [e.attrib["d"] for e in root.iter() if e.tag.endswith("path")]
+    if len(paths) != 3:
+        sys.exit(f"assets/brand/nanomuse-mark.svg: expected 3 AI Brain 02 paths, found {len(paths)}")
+    return paths
+
+
+def fmt(value: float) -> str:
+    return f"{value:.4f}".rstrip("0").rstrip(".")
 
 
 def transform(d: str, scale: float, ox: float, oy: float | None = None) -> str:
-    """Absolute M/L/C/Z path data, scaled and translated, 2 decimals."""
+    """Transform absolute M/L/C/V/H/Z SVG path data, retaining its command structure."""
     if oy is None:
         oy = ox
-    text = ""
-    n = 0
-    for tok in TOKEN.findall(d):
-        if tok in "MLCZ":
-            text += tok
+    tokens = TOKEN.findall(d)
+    output: list[str] = []
+    i = 0
+    command: str | None = None
+    move_first = False
+    while i < len(tokens):
+        token = tokens[i]
+        if token.isalpha():
+            command = token
+            output.append(command)
+            i += 1
+            if command == "Z":
+                command = None
+                continue
+            if command not in ARITY:
+                raise ValueError(f"Unsupported SVG command {command} in {d}")
+            move_first = command == "M"
+            continue
+        if command is None:
+            raise ValueError(f"Path data value without a command in {d}")
+        arity = ARITY[command]
+        if arity == 0 or i + arity > len(tokens):
+            raise ValueError(f"Invalid {command} segment in {d}")
+        values = [float(t) for t in tokens[i:i + arity]]
+        active = command
+        if command == "M" and not move_first:
+            active = "L"
+        transformed: list[str] = []
+        if active in ("M", "L"):
+            for j, value in enumerate(values):
+                transformed.append(fmt((ox if j % 2 == 0 else oy) + scale * value))
+        elif active == "C":
+            for j, value in enumerate(values):
+                transformed.append(fmt((ox if j % 2 == 0 else oy) + scale * value))
+        elif active == "H":
+            transformed.append(fmt(ox + scale * values[0]))
+        elif active == "V":
+            transformed.append(fmt(oy + scale * values[0]))
         else:
-            offset = ox if n % 2 == 0 else oy
-            text += f"{offset + scale * float(tok):.2f} "
-            n += 1
-    return re.sub(r" (?=[MLCZ])", "", text).strip()
+            raise ValueError(f"Unsupported SVG command {active} in {d}")
+        if command == "M" and not move_first:
+            output.append("L")
+        output.extend(transformed)
+        i += arity
+        if command == "M":
+            move_first = False
+        # For explicit commands, a following numeric group repeats the current command.
+        # M's later pairs are L pairs as required by SVG.
+        if i < len(tokens) and not tokens[i].isalpha():
+            if command == "M":
+                output.append("L")
+                command = "L"
+            else:
+                output.append(command)
+    return " ".join(output)
 
 
-def path_bbox(d: str) -> tuple[float, float, float, float]:
-    nums = [float(t) for t in TOKEN.findall(d) if t not in "MLCZ"]
-    xs, ys = nums[0::2], nums[1::2]
-    return min(xs), min(ys), max(xs), max(ys)
-
-
-def vector(path: str, fill: str, size: int, viewport: int, comment: str) -> str:
+def vector(paths: list[str], stroke: str, stroke_width: float, size: int, viewport: int,
+           comment: str) -> str:
+    elements = []
+    for path in paths:
+        start = f""">
+        <aapt:attr name="android:strokeColor">
+            <gradient android:type="linear"
+                android:startX="{18 + 0.72 * 14:.2f}" android:startY="54"
+                android:endX="{18 + 0.72 * 86:.2f}" android:endY="54"
+                android:startColor="#FF{STROKE_START[1:]}" android:endColor="#FF{STROKE_END[1:]}" />
+        </aapt:attr>
+    </path>""" if stroke == "gradient" else f' android:strokeColor="{stroke}" />'
+        elements.append(
+            f'<path android:pathData="{path}" android:fillColor="@android:color/transparent" '
+            f'android:strokeWidth="{stroke_width:.3f}" android:strokeLineCap="round" '
+            f'android:strokeLineJoin="round"{start}'
+        )
     return f"""<?xml version="1.0" encoding="utf-8"?>
 <!-- nanoMuse: {comment} Generated by scripts/gen-android-icons.py from
-     assets/brand/nanomuse-mark.svg; do not edit by hand. -->
+     Hugeicons AI Brain 02, free Stroke Rounded (MIT); see THIRD_PARTY_NOTICES.md. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="{size}dp" android:height="{size}dp"
     android:viewportWidth="{viewport}" android:viewportHeight="{viewport}">
-    <path android:pathData="{path}"{fill}
+    {' '.join(elements)}
 </vector>
 """
-
-
-def gradient_fill(x0: float, x1: float, y: float) -> str:
-    return f""">
-        <aapt:attr name="android:fillColor">
-            <gradient android:type="linear"
-                android:startX="{x0:.2f}" android:startY="{y:.0f}"
-                android:endX="{x1:.2f}" android:endY="{y:.0f}"
-                android:startColor="#FF{STROKE_START[1:]}" android:endColor="#FF{STROKE_END[1:]}" />
-        </aapt:attr>
-    </path>"""
-
-
-def flat_fill(argb: str) -> str:
-    return f' android:fillColor="{argb}" />'
 
 
 def adaptive(background: str, foreground: str) -> str:
@@ -118,126 +155,98 @@ def set_color(path: Path, name: str, value: str) -> None:
         print(f"  {path.relative_to(ROOT)}: {name} = {value}")
 
 
-def vectors(d: str) -> None:
-    p108 = transform(d, SCALE, OFFSET)
-    x0, _, x1, _ = path_bbox(p108)
+def vectors(paths: list[str]) -> None:
+    p108 = [transform(d, SCALE, OFFSET) for d in paths]
     drawable = RES / "drawable"
-    write(
-        drawable / "ic_launcher_foreground_nm.xml",
-        vector(
-            p108,
-            gradient_fill(x0, x1, 54),
-            108,
-            108,
-            "launcher foreground, the N in the brand gradient.",
-        ),
-    )
-    write(
-        drawable / "ic_launcher_foreground_nm_dark.xml",
-        vector(
-            p108, flat_fill("#FFFFFFFF"), 108, 108, "launcher foreground for the Dark icon skin."
-        ),
-    )
-    write(
-        drawable / "ic_launcher_monochrome.xml",
-        vector(
-            p108,
-            flat_fill("#FFFFFFFF"),
-            108,
-            108,
-            "themed-icon silhouette; the system re-tints it.",
-        ),
-    )
-    # 24dp status-bar icon: the mark in a 20dp box centred on the 24dp canvas.
-    bx0, by0, bx1, by1 = path_bbox(d)
-    scale = 20 / max(bx1 - bx0, by1 - by0)
-    p24 = transform(d, scale, 12 - scale * (bx0 + bx1) / 2, 12 - scale * (by0 + by1) / 2)
-    write(
-        drawable / "ic_stat_nanomuse.xml",
-        vector(p24, flat_fill("#FFFFFFFF"), 24, 24, "notification small icon (alpha mask)."),
-    )
+    write(drawable / "ic_launcher_foreground_nm.xml",
+          vector(p108, "gradient", TILE_STROKE_WIDTH * SCALE, 108, 108,
+                 "AI Brain 02 launcher foreground in the brand gradient."))
+    write(drawable / "ic_launcher_foreground_nm_dark.xml",
+          vector(p108, "#FFFFFFFF", TILE_STROKE_WIDTH * SCALE, 108, 108,
+                 "AI Brain 02 launcher foreground for the Dark icon skin."))
+    write(drawable / "ic_launcher_monochrome.xml",
+          vector(p108, "#FFFFFFFF", TILE_STROKE_WIDTH * SCALE, 108, 108,
+                 "AI Brain 02 monochrome silhouette; Android applies the tint."))
+
+    # Keep the source tile mark centred in a 20dp box on the 24dp notification canvas.
+    tile_bounds = 72.0
+    status_scale = 20.0 / (tile_bounds + TILE_STROKE_WIDTH)
+    status_offset = 12.0 - 50.0 * status_scale
+    p24 = [transform(d, status_scale, status_offset) for d in _brand_paths(paths)]
+    write(drawable / "ic_stat_nanomuse.xml",
+          vector(p24, "#FFFFFFFF", TILE_STROKE_WIDTH * status_scale, 24, 24,
+                 "AI Brain 02 notification small icon (alpha mask)."))
+
     anydpi = RES / "mipmap-anydpi-v26"
-    write(
-        anydpi / "ic_launcher.xml",
-        adaptive("@color/ic_launcher_background", "@drawable/ic_launcher_foreground_nm"),
-    )
-    write(
-        anydpi / "ic_launcher_classic_light.xml",
-        adaptive("@color/ic_launcher_bg_force_light", "@drawable/ic_launcher_foreground_nm"),
-    )
-    write(
-        anydpi / "ic_launcher_classic_dark.xml",
-        adaptive("@color/ic_launcher_bg_force_dark", "@drawable/ic_launcher_foreground_nm_dark"),
-    )
+    write(anydpi / "ic_launcher.xml", adaptive("@color/ic_launcher_background", "@drawable/ic_launcher_foreground_nm"))
+    write(anydpi / "ic_launcher_classic_light.xml", adaptive("@color/ic_launcher_bg_force_light", "@drawable/ic_launcher_foreground_nm"))
+    write(anydpi / "ic_launcher_classic_dark.xml", adaptive("@color/ic_launcher_bg_force_dark", "@drawable/ic_launcher_foreground_nm_dark"))
     set_color(RES / "values" / "ic_launcher_background.xml", "ic_launcher_background", TILE_LIGHT)
-    set_color(
-        RES / "values-night" / "ic_launcher_background.xml", "ic_launcher_background", TILE_LIGHT
-    )
-    set_color(
-        RES / "values" / "ic_launcher_alt_colors.xml", "ic_launcher_bg_force_light", TILE_LIGHT
-    )
+    set_color(RES / "values-night" / "ic_launcher_background.xml", "ic_launcher_background", TILE_LIGHT)
+    set_color(RES / "values" / "ic_launcher_alt_colors.xml", "ic_launcher_bg_force_light", TILE_LIGHT)
     set_color(RES / "values" / "ic_launcher_alt_colors.xml", "ic_launcher_bg_force_dark", TILE_DARK)
 
 
-def rasters(d: str) -> None:
+def _brand_paths(paths: list[str]) -> list[str]:
+    return [transform(d, 3.6, 6.8) for d in paths]
+
+
+def rasters(paths: list[str]) -> None:
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
         print("  playwright not installed: legacy PNG icons left as they are")
         return
     densities = {"mdpi": 1, "hdpi": 1.5, "xhdpi": 2, "xxhdpi": 3, "xxxhdpi": 4}
-    grad = (
-        f'<linearGradient id="g" gradientUnits="userSpaceOnUse" x1="12.6" y1="50" x2="87.8" y2="50">'
-        f'<stop offset="0" stop-color="{STROKE_START}"/><stop offset="1" stop-color="{STROKE_END}"/></linearGradient>'
+    brand_paths = _brand_paths(paths)
+    tile_svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+        '<defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="14" y1="50" x2="86" y2="50">'
+        f'<stop offset="0" stop-color="{STROKE_START}"/><stop offset="1" stop-color="{STROKE_END}"/></linearGradient></defs>'
+        f'<rect width="100" height="100" rx="27" fill="{TILE_LIGHT}"/>'
+        f'{_svg_paths(brand_paths, "url(#g)", TILE_STROKE_WIDTH)}</svg>'
     )
-    tile = (
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs>{grad}</defs>'
-        f'<rect width="100" height="100" rx="27" ry="27" fill="{TILE_LIGHT}"/><path d="{d}" fill="url(#g)"/></svg>'
+    p108 = [transform(d, SCALE, OFFSET) for d in brand_paths]
+    foreground_svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">'
+        '<defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="28.08" y1="54" x2="79.92" y2="54">'
+        f'<stop offset="0" stop-color="{STROKE_START}"/><stop offset="1" stop-color="{STROKE_END}"/></linearGradient></defs>'
+        f'{_svg_paths(p108, "url(#g)", TILE_STROKE_WIDTH * SCALE)}</svg>'
     )
-    p108 = transform(d, SCALE, OFFSET)
-    x0, _, x1, _ = path_bbox(p108)
-    grad_108 = (
-        f'<linearGradient id="g" gradientUnits="userSpaceOnUse" x1="{x0:.2f}" y1="54" x2="{x1:.2f}" y2="54">'
-        f'<stop offset="0" stop-color="{STROKE_START}"/><stop offset="1" stop-color="{STROKE_END}"/></linearGradient>'
-    )
-
-    def foreground(fill: str) -> str:
-        return (
-            f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108"><defs>{grad_108}</defs>'
-            f'<path d="{p108}" fill="{fill}"/></svg>'
-        )
-
+    dark_svg = foreground_svg.replace('stroke="url(#g)"', 'stroke="#FFFFFF"')
     jobs: list[tuple[Path, str, int]] = []
-    for name, k in densities.items():
+    for name, factor in densities.items():
         for prefix in ("mipmap", "mipmap-night"):
             folder = RES / f"{prefix}-{name}"
             if not folder.is_dir():
                 continue
             if (folder / "ic_launcher.png").exists():
-                jobs.append((folder / "ic_launcher.png", tile, round(48 * k)))
-            for fg_name, fill in (
-                ("ic_launcher_foreground.png", "url(#g)"),
-                ("ic_launcher_foreground_light.png", "url(#g)"),
-                ("ic_launcher_foreground_dark.png", "#FFFFFF"),
+                jobs.append((folder / "ic_launcher.png", tile_svg, round(48 * factor)))
+            for filename, svg in (
+                ("ic_launcher_foreground.png", foreground_svg),
+                ("ic_launcher_foreground_light.png", foreground_svg),
+                ("ic_launcher_foreground_dark.png", dark_svg),
             ):
-                if (folder / fg_name).exists():
-                    jobs.append((folder / fg_name, foreground(fill), round(108 * k)))
+                if (folder / filename).exists():
+                    jobs.append((folder / filename, svg, round(108 * factor)))
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = p.chromium.launch(executable_path="/usr/bin/chromium", args=["--no-sandbox"])
         page = browser.new_page()
         for target, svg, px in jobs:
             page.set_viewport_size({"width": px, "height": px})
             page.set_content(f'<body style="margin:0;background:transparent">{svg}</body>')
-            page.locator("svg").evaluate(
-                "(e, s) => { e.setAttribute('width', s); e.setAttribute('height', s); }", str(px)
-            )
-            page.screenshot(
-                path=str(target),
-                omit_background=True,
-                clip={"x": 0, "y": 0, "width": px, "height": px},
-            )
+            page.locator("svg").evaluate("(e, s) => { e.setAttribute('width', s); e.setAttribute('height', s); }", str(px))
+            page.screenshot(path=str(target), omit_background=True,
+                            clip={"x": 0, "y": 0, "width": px, "height": px})
         browser.close()
     print(f"  {len(jobs)} legacy PNGs rendered")
+
+
+def _svg_paths(paths: list[str], stroke: str, width: float) -> str:
+    return "".join(
+        f'<path d="{d}" fill="none" stroke="{stroke}" stroke-width="{width:g}" '
+        'stroke-linecap="round" stroke-linejoin="round"/>' for d in paths
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -246,15 +255,12 @@ def main(argv: list[str] | None = None) -> int:
         print(__doc__.strip())
         return 0
     if args:
-        print(
-            f"usage: {sys.argv[0]}  (takes no arguments; unknown: {' '.join(args)})",
-            file=sys.stderr,
-        )
+        print(f"usage: {sys.argv[0]}  (takes no arguments; unknown: {' '.join(args)})", file=sys.stderr)
         return 2
-    d = mark_path()
-    print("== launcher icons")
-    vectors(d)
-    rasters(d)
+    paths = mark_paths()
+    print("== Android launcher icons")
+    vectors(paths)
+    rasters(paths)
     return 0
 
 

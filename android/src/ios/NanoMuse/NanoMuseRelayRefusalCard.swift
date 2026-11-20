@@ -102,7 +102,7 @@ struct NanoMuseRelayRefusalCard: View {
 
     private func primary(_ label: String, action: @escaping () -> Void) -> some View {
         Button(label, action: action)
-            .buttonStyle(.borderedProminent).tint(NanoMuseTones.action).controlSize(.small)
+            .buttonStyle(.borderedProminent).tint(NanoMuseTones.action).foregroundStyle(NanoMuseTones.onPrimary).controlSize(.small)
     }
 
     @ViewBuilder

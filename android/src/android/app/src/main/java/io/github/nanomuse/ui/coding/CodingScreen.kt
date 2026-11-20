@@ -712,7 +712,7 @@ private fun Composer(draft: String, onDraft: (String) -> Unit, hint: String, run
             Icon(
                 imageVector = if (running) Icons.Outlined.Stop else Icons.AutoMirrored.Outlined.Send,
                 contentDescription = stringResource(if (running) R.string.nm_coding_stop else R.string.nm_coding_send),
-                tint = if (running || canSend) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = if (running) Color.White else if (canSend) MuseTones.actionForeground else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp),
             )
         }

@@ -42,7 +42,7 @@
 
 0.1.23 之前，小熊猫头部还用于 `web/public/icon.svg`、`mark.svg`、PWA 图标、README 封面、Android 自适应启动器图标和 MobileGym 图标。PWA 是可以安装到设备上的网页应用。Android 图标使用森林绿底色和无渐变的头部；主题图标与状态栏版本采用眼、鼻、嘴镂空的单色剪影，以适应系统裁切和着色。
 
-当时，`web/` 中的 `npm run mascot:assets` 从 `redPandaShapes.ts` 生成矢量图，`npm run site:mascot` 为网站生成六种状态，`python scripts/mascot_png.py` 将 PWA 图标和封面转为位图。所有版本使用同一份图形数据，避免分别绘制造成差异。`RedPanda.test.tsx` 保存平涂头部、剪影和 idle 状态大图的快照测试。现在 `web/public/icon.svg` 使用蓝色 N，绘制的默认形象为小龙；小熊猫文件已随玩偶资源一起移除。
+当时，`web/` 中的 `npm run mascot:assets` 从 `redPandaShapes.ts` 生成矢量图，`npm run site:mascot` 为网站生成六种状态，`python scripts/mascot_png.py` 将 PWA 图标和封面转为位图。所有版本使用同一份图形数据，避免分别绘制造成差异。`RedPanda.test.tsx` 保存平涂头部、剪影和 idle 状态大图的快照测试。0.1.23 之后到本次更新之前，蓝色 N 一直是 app 身份标志；现在改为 Hugeicons AI Brain 02，并使用 nanoMuse 的蓝色渐变（见 [brand.md](brand.md)）。小龙仍是动画形象，UI 控件图标保持独立；小熊猫文件已随玩偶资源一起移除。
 
 ## 配色与字体参数 {#colour-and-type-in-numbers}
 

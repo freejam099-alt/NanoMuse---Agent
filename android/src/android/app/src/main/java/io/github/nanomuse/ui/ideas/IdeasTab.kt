@@ -159,7 +159,7 @@ fun IdeasTab(
                         }
                     },
                     shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = io.github.nanomuse.ui.home.MuseTones.action, contentColor = Color.White),
+                    colors = ButtonDefaults.buttonColors(containerColor = io.github.nanomuse.ui.home.MuseTones.action, contentColor = io.github.nanomuse.ui.home.MuseTones.actionForeground),
                     modifier = Modifier.fillMaxWidth().height(50.dp),
                 ) {
                     Icon(Icons.Outlined.ChatBubbleOutline, contentDescription = null, modifier = Modifier.size(18.dp))

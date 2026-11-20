@@ -178,7 +178,7 @@ fun AllowanceWaysCard(
                         onClick = { openPreset(context, first.id) },
                         shape = CircleShape,
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 14.dp, vertical = 6.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                        colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                     ) {
                         Text(stringResource(R.string.nm_ways_add_named, first.displayName(chinese)), fontSize = 13.sp, fontWeight = FontWeight.Medium)
                     }

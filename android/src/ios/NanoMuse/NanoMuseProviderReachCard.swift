@@ -163,13 +163,13 @@ struct NanoMuseProviderReachCard: View {
                 Button(plan ? AppLocalized("Sign in again") : AppLocalized("Open providers")) {
                     NanoMuseOwnScheme.open("minis://settings/providers")
                 }
-                .buttonStyle(.borderedProminent).tint(NanoMuseTones.action).controlSize(.small)
+                .buttonStyle(.borderedProminent).tint(NanoMuseTones.action).foregroundStyle(NanoMuseTones.onPrimary).controlSize(.small)
                 if let onRetry { Button(AppLocalized("Try again"), action: onRetry).buttonStyle(.plain).font(.footnote).foregroundStyle(NanoMuseTones.action) }
                 if cloudOnce { NanoMuseCloudOnceButton(onRetry: onRetry) }
             } else {
                 if let onRetry {
                     Button(AppLocalized("Try again"), action: onRetry)
-                        .buttonStyle(.borderedProminent).tint(NanoMuseTones.action).controlSize(.small)
+                        .buttonStyle(.borderedProminent).tint(NanoMuseTones.action).foregroundStyle(NanoMuseTones.onPrimary).controlSize(.small)
                 }
                 if cloudOnce { NanoMuseCloudOnceButton(onRetry: onRetry) }
                 if reach.kind == .unreachable || reach.kind == .regionBlocked {

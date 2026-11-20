@@ -354,7 +354,7 @@ private fun IntroCard(onEdit: () -> Unit, onAck: () -> Unit) {
                             stringResource(R.string.nm_feed_got_it),
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color.White,
+                            color = MuseTones.actionForeground,
                             modifier = Modifier.padding(horizontal = 26.dp, vertical = 11.dp),
                         )
                     }
@@ -384,7 +384,7 @@ private fun EmptyState(generating: Boolean, onWriteNow: () -> Unit) {
                 Button(
                     onClick = onWriteNow,
                     shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                     modifier = Modifier.fillMaxWidth().height(46.dp),
                 ) { Text(stringResource(R.string.nm_feed_write_now), fontSize = 15.sp, fontWeight = FontWeight.SemiBold) }
             }
@@ -490,7 +490,7 @@ private fun FeedSettingsSheet(onDismiss: () -> Unit, onEditRoutine: (String) -> 
             Button(
                 onClick = { FeedStore.savePreferences(text); FeedFlow.acknowledgeIntro(context); onDismiss() },
                 shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                 modifier = Modifier.fillMaxWidth().height(46.dp),
             ) { Text(stringResource(R.string.nm_feed_save), fontSize = 15.sp, fontWeight = FontWeight.SemiBold) }
         }

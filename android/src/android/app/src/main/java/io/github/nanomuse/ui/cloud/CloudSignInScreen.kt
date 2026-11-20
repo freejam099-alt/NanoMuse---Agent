@@ -411,11 +411,11 @@ fun CloudSignInScreen(
                 onClick = { submit() },
                 enabled = canSubmit,
                 shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                 modifier = Modifier.fillMaxWidth().height(50.dp),
             ) {
                 if (verifying) {
-                    CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = Color.White)
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = MuseTones.actionForeground)
                 } else {
                     Text(
                         text = if (byPassword || codeSent) stringResource(R.string.nm_cloud_verify) else stringResource(R.string.nm_cloud_send_code),

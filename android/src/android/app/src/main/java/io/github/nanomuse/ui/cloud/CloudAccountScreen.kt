@@ -1091,7 +1091,7 @@ private fun InviteCard(a: NanoMuseCloud.Account) {
                     })
                 },
                 shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Icon(Icons.Outlined.Share, contentDescription = null, modifier = Modifier.size(16.dp))

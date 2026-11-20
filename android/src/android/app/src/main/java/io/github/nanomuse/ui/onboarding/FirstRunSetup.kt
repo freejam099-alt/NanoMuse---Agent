@@ -202,47 +202,49 @@ fun FirstRunSetupScreen(
     val onSurface = MaterialTheme.colorScheme.onSurface
 
     Surface(color = MuseTones.surface, modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-                .navigationBarsPadding(),
-        ) {
-            // Muse keeps a gear at the top right of its welcome screen; ours opens Settings,
-            // where every OpenMinis page (providers, groups, appearance) is reachable anyway.
-            Box(modifier = Modifier.fillMaxWidth().height(56.dp)) {
-                Dots(current = FirstRunSetup.dot(stage), total = 3, modifier = Modifier.align(Alignment.Center))
-                IconButton(onClick = onSettings, modifier = Modifier.align(Alignment.CenterEnd).padding(end = 8.dp)) {
-                    Icon(Icons.Outlined.Settings, contentDescription = stringResource(R.string.nm_setup_settings), tint = onSurface)
+        Box(Modifier.fillMaxSize().background(MuseTones.setupWash)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .navigationBarsPadding(),
+            ) {
+                // Muse keeps a gear at the top right of its welcome screen; ours opens Settings,
+                // where every OpenMinis page (providers, groups, appearance) is reachable anyway.
+                Box(modifier = Modifier.fillMaxWidth().height(56.dp)) {
+                    Dots(current = FirstRunSetup.dot(stage), total = 3, modifier = Modifier.align(Alignment.Center))
+                    IconButton(onClick = onSettings, modifier = Modifier.align(Alignment.CenterEnd).padding(end = 8.dp)) {
+                        Icon(Icons.Outlined.Settings, contentDescription = stringResource(R.string.nm_setup_settings), tint = onSurface)
+                    }
                 }
-            }
-            AnimatedContent(
-                targetState = stage,
-                transitionSpec = {
-                    val forward = targetState.ordinal >= initialState.ordinal
-                    (slideInHorizontally(tween(260)) { if (forward) it / 6 else -it / 6 } + fadeIn(tween(220))) togetherWith
-                        (slideOutHorizontally(tween(200)) { if (forward) -it / 6 else it / 6 } + fadeOut(tween(160)))
-                },
-                label = "nmSetupStage",
-                modifier = Modifier.weight(1f),
-            ) { current ->
-                when (current) {
-                    FirstRunSetup.Stage.WELCOME -> WelcomePage(
-                        onSignIn = onSignIn,
-                        onOwnKey = { FirstRunSetup.markSourceChosen(context); sourceChosen = true; onAddProvider() },
-                    )
-                    FirstRunSetup.Stage.PASSWORD -> PasswordPage(
-                        onDone = { NanoMuseCloud.clearFreshAccount(context); passwordAnswered = true; fresh = false },
-                    )
-                    FirstRunSetup.Stage.SOURCE -> SourcePage(
-                        onCloud = { FirstRunSetup.markSourceChosen(context); sourceChosen = true },
-                        onOwnKey = { FirstRunSetup.markSourceChosen(context); sourceChosen = true; onAddProvider() },
-                    )
-                    FirstRunSetup.Stage.MODELS -> ModelsPage(onSelectModels = onSelectModels, onSkip = { modelsSkipped = true })
-                    FirstRunSetup.Stage.HANDS -> HandsPage(
-                        onDone = { FirstRunSetup.markHandsGuideSeen(context); handsSeen = true },
-                    )
-                    FirstRunSetup.Stage.MEET -> MeetPage(agentName = agentName, onStart = onStart)
+                AnimatedContent(
+                    targetState = stage,
+                    transitionSpec = {
+                        val forward = targetState.ordinal >= initialState.ordinal
+                        (slideInHorizontally(tween(260)) { if (forward) it / 6 else -it / 6 } + fadeIn(tween(220))) togetherWith
+                            (slideOutHorizontally(tween(200)) { if (forward) -it / 6 else it / 6 } + fadeOut(tween(160)))
+                    },
+                    label = "nmSetupStage",
+                    modifier = Modifier.weight(1f),
+                ) { current ->
+                    when (current) {
+                        FirstRunSetup.Stage.WELCOME -> WelcomePage(
+                            onSignIn = onSignIn,
+                            onOwnKey = { FirstRunSetup.markSourceChosen(context); sourceChosen = true; onAddProvider() },
+                        )
+                        FirstRunSetup.Stage.PASSWORD -> PasswordPage(
+                            onDone = { NanoMuseCloud.clearFreshAccount(context); passwordAnswered = true; fresh = false },
+                        )
+                        FirstRunSetup.Stage.SOURCE -> SourcePage(
+                            onCloud = { FirstRunSetup.markSourceChosen(context); sourceChosen = true },
+                            onOwnKey = { FirstRunSetup.markSourceChosen(context); sourceChosen = true; onAddProvider() },
+                        )
+                        FirstRunSetup.Stage.MODELS -> ModelsPage(onSelectModels = onSelectModels, onSkip = { modelsSkipped = true })
+                        FirstRunSetup.Stage.HANDS -> HandsPage(
+                            onDone = { FirstRunSetup.markHandsGuideSeen(context); handsSeen = true },
+                        )
+                        FirstRunSetup.Stage.MEET -> MeetPage(agentName = agentName, onStart = onStart)
+                    }
                 }
             }
         }
@@ -529,7 +531,10 @@ private fun Page(
             Button(
                 onClick = onPrimary,
                 shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MuseTones.action,
+                    contentColor = MuseTones.actionForeground,
+                ),
                 modifier = Modifier.fillMaxWidth().height(50.dp),
             ) {
                 Text(primaryLabel, fontSize = 16.sp, fontWeight = FontWeight.Medium)

@@ -1,4 +1,4 @@
-// The desktop's splash: the app's own logo (the N mark on its white tile, docs/brand.md) in a
+// The desktop's splash: the app's own logo (AI Brain 02 on its white tile, docs/brand.md) in a
 // quiet ring, the wordmark, one status line — no picture of any character and no reading of
 // the person's face; the error state keeps the layout.
 // Read as text — the page is opened in no browser here.

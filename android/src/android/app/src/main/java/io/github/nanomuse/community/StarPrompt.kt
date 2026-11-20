@@ -325,7 +325,7 @@ fun StarNudgeCard(
                     onClick = { StarPrompt.open(context); onDone() },
                     shape = CircleShape,
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 14.dp, vertical = 6.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = Color.White),
+                    colors = ButtonDefaults.buttonColors(containerColor = MuseTones.action, contentColor = MuseTones.actionForeground),
                 ) { Text(stringResource(R.string.nm_star_action), fontSize = 13.sp, fontWeight = FontWeight.Medium) }
                 Spacer(Modifier.width(6.dp))
                 TextButton(onClick = onDone) {
